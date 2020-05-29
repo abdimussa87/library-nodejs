@@ -1,3 +1,4 @@
+/* eslint-disable */
 const express = require('express');
 const chalk = require('chalk');
 const morgan = require('morgan');
@@ -6,6 +7,11 @@ const debug = require('debug')('app');
 
 const port = process.env.PORT || 8080;
 const app = express();
+const nav = [{ link: '/books', title: 'Books' }, { link: '/authors', title: 'Authors' }];
+const bookRouter = require('./src/routes/bookRoutes')(nav);
+
+
+
 
 app.use(morgan('tiny'));// acts like a middleware and console logs the request header
 app.use(express.static(path.join(__dirname, '/assets/')));
@@ -18,8 +24,13 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 
+app.use('/books', bookRouter);
+
 app.get('/', (req, res) => {
-  res.render('index', { myList: ['a', 'b'], title: 'My Library' });
+  res.render('index', {
+    nav: [{ link: '/books', title: 'Books' }, { link: '/authors', title: 'Authors' }],
+    title: 'My Library',
+  });
 });
 
 app.listen(port, () => {
