@@ -9,7 +9,7 @@ const port = process.env.PORT || 8080;
 const app = express();
 const nav = [{ link: '/books', title: 'Books' }, { link: '/authors', title: 'Authors' }];
 const bookRouter = require('./src/routes/bookRoutes')(nav);
-
+const adminRouter = require('./src/routes/adminRoute')(nav);
 
 
 
@@ -25,6 +25,7 @@ app.set('view engine', 'ejs');
 
 
 app.use('/books', bookRouter);
+app.use('/admin',adminRouter);
 
 app.get('/', (req, res) => {
   res.render('index', {
