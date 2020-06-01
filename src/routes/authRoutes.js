@@ -26,21 +26,29 @@ module.exports = function router(nav) {
     }());
   });
 
-  authRouter.route('/profile').get((req, res) => {
-    res.json(req.user);
-  });
-
   authRouter.route('/signin')
     .get((req, res) => {
       res.render('signin', { title: 'Sign in', nav });
     })
     .post(passport.authenticate('local', {
-      successRedirect: '/auth/profile',
+      successRedirect: '/books',
       failureRedirect: '/',
     }));
 
-  authRouter.route('/profile').get((req, res) => {
-    res.json(req.user);
+  authRouter.route('/profile')
+    .all((req, res, next) => {
+      if (req.user) {
+        next();
+      } else {
+        res.redirect('/');
+      }
+    })
+    .get((req, res) => {
+      res.json(req.user);
+    });
+  authRouter.route('/logout').get((req, res) => {
+    req.logout();
+    res.redirect('/auth/signin');
   });
 
   return authRouter;

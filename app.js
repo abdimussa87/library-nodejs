@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 
 const port = process.env.PORT || 8080;
 const app = express();
-const nav = [{ link: '/books', title: 'Books' }, { link: '/authors', title: 'Authors' }];
+const nav = [{ link: '/books', title: 'Books' }];
 const bookRouter = require('./src/routes/bookRoutes')(nav);
 const adminRouter = require('./src/routes/adminRoute')(nav);
 const authRouter = require('./src/routes/authRoutes')(nav);
@@ -43,10 +43,16 @@ app.use('/admin', adminRouter);
 app.use('/auth', authRouter);
 
 app.get('/', (req, res) => {
-  res.render('index', {
-    nav: [{ link: '/books', title: 'Books' }, { link: '/authors', title: 'Authors' }],
-    title: 'My Library',
-  });
+  if(req.user){
+
+   res.redirect('/books');
+  }
+  else{
+     res.render('index', {
+      nav,
+      title: 'My Library',
+    });
+  }
 });
 
 app.listen(port, () => {

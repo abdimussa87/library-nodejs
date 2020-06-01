@@ -38,6 +38,14 @@ function router(nav) {
   //   },
   // ];
 
+
+  bookRouter.use((req, res, next) => {
+    if (req.user) {
+      next();
+    } else {
+      res.redirect('/');
+    }
+  });
   bookRouter.route('/').get((req, res) => {
     const url = 'mongodb://localhost:27017';
     const dbName = 'libraryApp';
@@ -49,6 +57,7 @@ function router(nav) {
         const books = await db.collection('books').find().toArray();
         res.render('books', {
           nav,
+
           title: 'My Library',
           books,
         });
@@ -70,6 +79,7 @@ function router(nav) {
         const book = await db.collection('books').findOne({ _id: new ObjectId(id) });
         res.render('singleBook', {
           nav,
+
           title: 'My Library',
           book,
         });
